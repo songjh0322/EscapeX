@@ -5,9 +5,12 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     public float maxSpeed;
+    public float jumpPower;
+    public bool isJump = false;
     Rigidbody2D rigid;
     SpriteRenderer spriteRenderer;
     Animator anim;
+
     private void Awake()  //초기화는 Awake에서 한다. (이유는 하다보면 알게되겠지..)
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -16,6 +19,17 @@ public class PlayerMove : MonoBehaviour
     }
     private void Update() //Update : 단발적인 키 입력
     {
+
+        //Jump
+        if (Input.GetButtonDown("Jump"))
+        {
+            if (!isJump)
+            {
+                isJump = true;
+                rigid.AddForce(Vector3.up * jumpPower, ForceMode2D.Impulse);
+                
+            }
+        }
         //Stop Speed
         if (Input.GetButtonUp("Horizontal")) //뗏을때
         {
@@ -56,6 +70,15 @@ public class PlayerMove : MonoBehaviour
         else if (rigid.velocity.x < maxSpeed * (-1)) //Left Max Speed
         {
             rigid.velocity = new Vector2(maxSpeed * (-1), rigid.velocity.y);
+        }
+
+
+    }
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.name.Equals("Tilemap"))
+        {
+            isJump = false;
         }
     }
 }
