@@ -11,7 +11,7 @@ public class PlayerMove : MonoBehaviour
     Rigidbody2D rigid;
     SpriteRenderer spriteRenderer;
     Animator anim;
-
+    
     private void Awake()  //초기화는 Awake에서 한다. (이유는 하다보면 알게되겠지..)
     {
         rigid = GetComponent<Rigidbody2D>();
