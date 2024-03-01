@@ -162,7 +162,7 @@ MonoBehaviour:
   checkDistance: 0.2
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 256
 --- !u!50 &32590630
 Rigidbody2D:
   serializedVersion: 4
@@ -2302,7 +2302,7 @@ GameObject:
   - component: {fileID: 724656623}
   - component: {fileID: 724656622}
   - component: {fileID: 724656624}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19601,9 +19601,10 @@ GameObject:
   - component: {fileID: 892443891}
   - component: {fileID: 892443890}
   - component: {fileID: 892443889}
+  - component: {fileID: 892443892}
   m_Layer: 0
   m_Name: Saw1 (1)
-  m_TagString: Untagged
+  m_TagString: Trap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19616,8 +19617,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 892443887}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -19.26, y: -5.91, z: 0.095559224}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -19.260002, y: -5.91, z: 0.095559224}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -19652,7 +19653,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -19719,7 +19720,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -3049067163339015078, guid: c016f0eb0a188a14ab7f86d910097523, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -19731,6 +19732,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &892443892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 892443887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d69d66b39264154faa820e4e19a6476, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveUpDistance: 1.5
+  moveSpeed: 3
+  waitTime: 2
 --- !u!1 &901674870
 GameObject:
   m_ObjectHideFlags: 0
@@ -24480,9 +24496,10 @@ GameObject:
   - component: {fileID: 1460955114}
   - component: {fileID: 1460955113}
   - component: {fileID: 1460955115}
-  m_Layer: 0
+  - component: {fileID: 1460955116}
+  m_Layer: 9
   m_Name: Saw1
-  m_TagString: Untagged
+  m_TagString: Trap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24563,7 +24580,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -3049067163339015078, guid: c016f0eb0a188a14ab7f86d910097523, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -24604,12 +24621,27 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 2.375, y: 2.375}
   m_Direction: 0
+--- !u!114 &1460955116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460955111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c5dc15737b7f4840b1a48d8bd79f26b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveDownDistance: 1.5
+  moveSpeed: 3
+  waitTime: 1
 --- !u!1 &1518252701
 GameObject:
   m_ObjectHideFlags: 0
@@ -25763,7 +25795,8 @@ GameObject:
   - component: {fileID: 1987732139}
   - component: {fileID: 1987732138}
   - component: {fileID: 1987732137}
-  m_Layer: 0
+  - component: {fileID: 1987732140}
+  m_Layer: 9
   m_Name: Saw1 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25814,7 +25847,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -25893,6 +25926,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1987732140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987732135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d69d66b39264154faa820e4e19a6476, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveUpDistance: 1.5
+  moveSpeed: 3
+  waitTime: 2
 --- !u!1 &2001531423
 GameObject:
   m_ObjectHideFlags: 0
