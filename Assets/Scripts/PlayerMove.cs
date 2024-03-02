@@ -1,129 +1,137 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; // 씬 관리를 위해 추가
 
 public class PlayerMove : MonoBehaviour
 {
-    public float maxSpeed;
-    public float jumpPower;
-    public float knockPower;
-    public bool isJump = false;
-    Rigidbody2D rigid;
-    SpriteRenderer spriteRenderer;
-    Animator anim;
-    
-    private void Awake()  //초기화는 Awake에서 한다. (이유는 하다보면 알게되겠지..)
+    public float moveSpeed = 5.0f; // 캐릭터의 이동 속도
+    public float jumpForce = 700f; // 점프 힘
+    private Rigidbody2D rb; // 캐릭터의 Rigidbody2D 컴포넌트
+    private Animator animator; // 캐릭터의 Animator 컴포넌트
+    private bool isGrounded; // 바닥에 있는지 여부
+    public Transform groundCheck; // 바닥 체크를 위한 Transform
+    public float checkDistance = 0.2f; // 바닥 체크 거리
+    public LayerMask whatIsGround; // 바닥으로 간주될 레이어
+    private float moveX; // 수평 이동 입력 값
+    private bool isMoving; // 캐릭터가 이동 중인지 여부를 나타내는 플래그
+
+    private bool isDead = false; // 캐릭터의 사망 상태
+
+    public bool isInputEnabled = true;
+
+
+    private void Awake()
     {
-        rigid = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>(); // Rigidbody2D 컴포넌트를 가져옴
+        animator = GetComponent<Animator>(); // Animator 컴포넌트를 가져옴
     }
-    private void Update() //Update : 단발적인 키 입력
+
+    private void Update()
     {
-
-        //Jump
-        if (Input.GetButtonDown("Jump"))
+        if (!isInputEnabled)
         {
-            if (!isJump)
-            {
-                isJump = true;
-                rigid.AddForce(Vector3.up * jumpPower, ForceMode2D.Impulse);
-
-            }
-        }
-        //Stop Speed
-        if (Input.GetButtonUp("Horizontal")) //뗏을때
-        {
-            rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
+            return;
         }
 
-        //Direction Sprite
-        if (Input.GetButton("Horizontal"))
-        {
-            spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") == -1;
+        if (isDead) return; // 사망 상태일 때는 입력을 받지 않음
 
-        }
-        //Animation
-        if (Mathf.Abs(rigid.velocity.x) < 0.5)
+        moveX = Input.GetAxisRaw("Horizontal"); // 수평 이동 입력을 받음
+        isMoving = moveX != 0; // 캐릭터가 이동 중인지 판단
+
+        // 애니메이션 상태를 업데이트
+        animator.SetBool("isMoving", isMoving);
+
+        // 캐릭터의 방향을 업데이트
+        if (moveX < 0)
         {
-            anim.SetBool("isWalking", false);
+            transform.localScale = new Vector3(-1, 1, 1); // 왼쪽을 바라보게 함
+        }
+        else if (moveX > 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1); // 오른쪽을 바라보게 함
+        }
+        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, checkDistance, whatIsGround);
+        if (hit.collider != null)
+        {
+            isGrounded = true;
         }
         else
         {
-            anim.SetBool("isWalking", true);
+            isGrounded = false;
+        }
+        animator.SetBool("isGrounded", isGrounded);
 
 
+        // 점프 입력 처리
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            rb.AddForce(new Vector2(0, jumpForce));
         }
     }
-
-    private void FixedUpdate() //1초에 걍 50번 준다. 즉 누르면 누를수록 엄청 빨라짐(Addforce)->가속을 무한으로 받는다.
-    //FixedUpdate : 지속적인 키 입력
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Move Speed
-        float h = Input.GetAxisRaw("Horizontal");
-
-        rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
-
-        if (rigid.velocity.x > maxSpeed) //Right Max Speed
+        if (collision.gameObject.CompareTag("Trap"))
         {
-            rigid.velocity = new Vector2(maxSpeed, rigid.velocity.y);
+            // 사망 처리 로직
+            Die();
         }
-        else if (rigid.velocity.x < maxSpeed * (-1)) //Left Max Speed
-        {
-            rigid.velocity = new Vector2(maxSpeed * (-1), rigid.velocity.y);
-        }
-        // Speed Modifier - Shift 키를 누르면 속도 2.5배
-        float speedModifier = Input.GetKey(KeyCode.LeftShift) ? 2.5f : 1.0f;
-
-        rigid.AddForce(Vector2.right * h * speedModifier, ForceMode2D.Impulse);
-
-        // 속도 조절을 위해 현재 속도가 최대 속도를 넘지 않도록 함
-        // 속도가 maxSpeed * speedModifier(Shift 키가 눌린 경우 2배)를 초과하지 않도록 함
-        float maxModifiedSpeed = maxSpeed * speedModifier;
-        if (rigid.velocity.x > maxModifiedSpeed) // Right Max Speed
-        {
-            rigid.velocity = new Vector2(maxModifiedSpeed, rigid.velocity.y);
-        }
-        else if (rigid.velocity.x < -maxModifiedSpeed) // Left Max Speed
-        {
-            rigid.velocity = new Vector2(-maxModifiedSpeed, rigid.velocity.y);
-        }
-
-
+        
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.name.Equals("Tilemap"))
+        if (collision.gameObject.CompareTag("Trap"))
         {
-            isJump = false;
-        }
-
-        // "Trap" 오브젝트에 닿았을 때 넉백 실행
-        else if (collision.gameObject.name.Equals("Trap"))
-        {
-            // 현재 이동 방향을 기반으로 넉백 힘과 방향을 설정
-            Vector2 knockbackForce = Vector2.zero;
-            float knockbackPower = 5f; // 넉백의 힘을 원하는 대로 설정하세요.
-
-            // 캐릭터가 오른쪽으로 이동 중이었다면 왼쪽으로, 왼쪽으로 이동 중이었다면 오른쪽으로 넉백
-            if (rigid.velocity.x > 0) // 오른쪽으로 이동 중
-            {
-                knockbackForce = new Vector2(-knockbackPower, knockPower);
-            }
-            else if (rigid.velocity.x < 0) // 왼쪽으로 이동 중
-            {
-                knockbackForce = new Vector2(knockbackPower, knockPower);
-            }
-            else // 이동하지 않는 경우, 기본적으로 오른쪽으로 넉백
-            {
-                knockbackForce = new Vector2(-knockbackPower, knockPower);
-            }
-
-            // 넉백 힘 적용
-            rigid.velocity = Vector2.zero; // 현재 속도 초기화
-            rigid.AddForce(knockbackForce, ForceMode2D.Impulse);
+            Die();
         }
     }
+    void Die()
+    {
+        isDead = true;
+        animator.SetTrigger("Die"); // 사망 애니메이션 실행
+        rb.velocity = Vector2.zero; // 캐릭터의 이동 속도를 0으로 설정
+        rb.gravityScale = 0; // 사망 시 중력 적용 (필요한 경우 중력 스케일 조정)
+        
+        // 사망 처리 변경...
+        StartCoroutine(ShowCurrentLivesScene()); // "현재 목숨" 씬 표시 코루틴 실행
+    }
+    IEnumerator RestartGame()
+    {
+        yield return new WaitForSeconds(3); // 3초 대기
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // 현재 씬 재로딩
+    }
+    IEnumerator ShowCurrentLivesScene()
+    {
+        yield return new WaitForSeconds(3); // 사망 애니메이션을 위한 대기 시간
+        SceneManager.LoadScene("CurrentLives"); // "현재 목숨" 씬으로 전환
+        yield return new WaitForSeconds(3); // "현재 목숨" 씬 표시 시간
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // 원래 씬으로 돌아가기
+    }
+
+
+
+    private void FixedUpdate()
+    {
+        if (isDead) return; // 사망 상태일 때는 이동 처리를 하지 않음
+        // Rigidbody2D를 사용해 캐릭터를 이동시킴
+        rb.velocity = new Vector2(moveX * moveSpeed, rb.velocity.y);
+
+        // 추가적으로, Shift 키를 눌러 이동 속도를 조절할 수 있다.
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            rb.velocity = new Vector2(moveX * moveSpeed * 1.5f, rb.velocity.y);
+        }
+    }
+    void OnDrawGizmos()
+    {
+        if (groundCheck == null) return;
+
+        // 바닥 체크 광선 시각화
+        Gizmos.color = Color.red;
+        Vector2 start = groundCheck.position; // 광선의 시작점
+        Vector2 end = start + Vector2.down * checkDistance; // 광선의 끝점 (아래 방향으로 checkDistance만큼)
+
+        Gizmos.DrawLine(start, end);
+
+    }
 }
-
-

@@ -65,10 +65,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\SawControl2.cs" />
-    <Compile Include="Assets\Scripts\Player2Move.cs" />
+    <Compile Include="Assets\Scripts\TriggerUp.cs" />
+    <Compile Include="Assets\Scripts\Goal.cs" />
     <Compile Include="Assets\Scripts\ScoreManager.cs" />
     <Compile Include="Assets\Scripts\PlayerMove.cs" />
     <Compile Include="Assets\Scripts\LoadGameSceneAfterDelay.cs" />
+    <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\SawControl.cs" />
     <Compile Include="Assets\Scripts\TriggerFall.cs" />
     <Compile Include="Assets\Scripts\Foothold.cs" />

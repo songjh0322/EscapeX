@@ -24,7 +24,7 @@ public class ScoreManager : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Melon"))
         {
-            score += 50; // 점수 증가
+            score += 500; // 점수 증가
             scoreText.text = "Score: " + score.ToString(); // 점수 표시 업데이트
             Destroy(other.gameObject); // 과일 오브젝트 제거
         }
