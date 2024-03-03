@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public bool isInputEnabled = true;
-    // Start is called before the first frame update
+    public AudioSource backgroundMusicAudioSource; // 배경음악을 재생하는 AudioSource
     
 
     // Update is called once per frame
@@ -14,6 +14,13 @@ public class PlayerController : MonoBehaviour
         if (!isInputEnabled)
         {
             return;
+        }
+    }
+    public void StopBackgroundMusic()
+    {
+        if (backgroundMusicAudioSource != null)
+        {
+            backgroundMusicAudioSource.Stop();
         }
     }
 }

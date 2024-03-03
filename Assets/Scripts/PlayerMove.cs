@@ -7,6 +7,8 @@ public class PlayerMove : MonoBehaviour
 {
     public AudioSource backgroundMusicAudioSource; // 인스펙터에서 배경음악 AudioSource 할당
     private AudioSource deathSoundAudioSource;
+    public AudioClip jumpSound; // 점프 효과음 오디오 클립
+    private AudioSource audioSource; // 오디오 소스 컴포넌트
     public float moveSpeed = 5.0f; // 캐릭터의 이동 속도
     public float jumpForce = 700f; // 점프 힘
     private Rigidbody2D rb; // 캐릭터의 Rigidbody2D 컴포넌트
@@ -30,6 +32,7 @@ public class PlayerMove : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>(); // Rigidbody2D 컴포넌트를 가져옴
         animator = GetComponent<Animator>(); // Animator 컴포넌트를 가져옴
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -69,6 +72,8 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.AddForce(new Vector2(0, jumpForce));
+            // 점프 효과음 재생
+            audioSource.PlayOneShot(jumpSound);
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
