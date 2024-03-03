@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\SawControl2.cs" />
     <Compile Include="Assets\Scripts\TriggerUp.cs" />
     <Compile Include="Assets\Scripts\Goal.cs" />
+    <Compile Include="Assets\Scripts\Fruit.cs" />
     <Compile Include="Assets\Scripts\ScoreManager.cs" />
     <Compile Include="Assets\Scripts\PlayerMove.cs" />
     <Compile Include="Assets\Scripts\LoadGameSceneAfterDelay.cs" />

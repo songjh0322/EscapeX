@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement; // 씬 관리를 위해 추가
 
 public class PlayerMove : MonoBehaviour
 {
+    public AudioSource backgroundMusicAudioSource; // 인스펙터에서 배경음악 AudioSource 할당
+    private AudioSource deathSoundAudioSource;
     public float moveSpeed = 5.0f; // 캐릭터의 이동 속도
     public float jumpForce = 700f; // 점프 힘
     private Rigidbody2D rb; // 캐릭터의 Rigidbody2D 컴포넌트
@@ -18,9 +20,12 @@ public class PlayerMove : MonoBehaviour
 
     private bool isDead = false; // 캐릭터의 사망 상태
 
-    public bool isInputEnabled = true;
 
 
+    private void Start()
+    {
+        deathSoundAudioSource = GetComponent<AudioSource>();
+    }
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>(); // Rigidbody2D 컴포넌트를 가져옴
@@ -29,10 +34,7 @@ public class PlayerMove : MonoBehaviour
 
     private void Update()
     {
-        if (!isInputEnabled)
-        {
-            return;
-        }
+
 
         if (isDead) return; // 사망 상태일 때는 입력을 받지 않음
 
@@ -76,7 +78,7 @@ public class PlayerMove : MonoBehaviour
             // 사망 처리 로직
             Die();
         }
-        
+
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -87,11 +89,17 @@ public class PlayerMove : MonoBehaviour
     }
     void Die()
     {
+        // 배경음악 멈추기
+        backgroundMusicAudioSource.Stop();
+
+        // 사망 효과음 재생
+        deathSoundAudioSource.Play();
+        
         isDead = true;
         animator.SetTrigger("Die"); // 사망 애니메이션 실행
         rb.velocity = Vector2.zero; // 캐릭터의 이동 속도를 0으로 설정
         rb.gravityScale = 0; // 사망 시 중력 적용 (필요한 경우 중력 스케일 조정)
-        
+
         // 사망 처리 변경...
         StartCoroutine(ShowCurrentLivesScene()); // "현재 목숨" 씬 표시 코루틴 실행
     }
